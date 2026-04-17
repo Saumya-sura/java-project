@@ -56,6 +56,12 @@ class ExpenseTracker {
     }
 
     public void addExpense(String description, double amount, LocalDate date) {
+        if (description == null || description.trim().isEmpty()) {
+            throw new IllegalArgumentException("Expense description cannot be empty or whitespace.");
+        }
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Expense amount must be positive and non-zero.");
+        }
         if (amount > balance) {
             throw new IllegalArgumentException("Insufficient balance. Please add money first.");
         }
@@ -102,6 +108,12 @@ class ExpenseTracker {
     public void editExpense(int index, String newDesc, double newAmt, LocalDate newDate) {
         if (index < 0 || index >= expenses.size()) {
             throw new IllegalArgumentException("Invalid expense index.");
+        }
+        if (newDesc == null || newDesc.trim().isEmpty()) {
+            throw new IllegalArgumentException("Expense description cannot be empty or whitespace.");
+        }
+        if (newAmt <= 0) {
+            throw new IllegalArgumentException("Expense amount must be positive and non-zero.");
         }
         Expense old = expenses.get(index);
         double diff = newAmt - old.getAmount();
@@ -313,24 +325,37 @@ public class ExpenseTrackerApp {
                     try {
                         System.out.print("Enter year (yyyy): ");
                         int year = Integer.parseInt(scanner.nextLine());
+                        if (year < 1900) {
+                            throw new IllegalArgumentException("Year must be 1900 or later.");
+                        }
                         System.out.print("Enter month (1-12): ");
                         int month = Integer.parseInt(scanner.nextLine());
+                        if (month < 1 || month > 12) {
+                            throw new IllegalArgumentException("Month must be between 1 and 12.");
+                        }
                         System.out.println("Index Description          Amount     Date");
                         System.out.println("---------------------------------------------");
                         tracker.showSummaryByMonth(year, month);
                     } catch (NumberFormatException e) {
                         System.out.println("Invalid input. Please enter valid numbers.");
+                    } catch (IllegalArgumentException e) {
+                        System.out.println(e.getMessage());
                     }
                     break;
                 case "9":
                     try {
                         System.out.print("Enter year (yyyy): ");
                         int year = Integer.parseInt(scanner.nextLine());
+                        if (year < 1900) {
+                            throw new IllegalArgumentException("Year must be 1900 or later.");
+                        }
                         System.out.println("Index Description          Amount     Date");
                         System.out.println("---------------------------------------------");
                         tracker.showSummaryByYear(year);
                     } catch (NumberFormatException e) {
                         System.out.println("Invalid input. Please enter a valid year.");
+                    } catch (IllegalArgumentException e) {
+                        System.out.println(e.getMessage());
                     }
                     break;
                 case "10":
